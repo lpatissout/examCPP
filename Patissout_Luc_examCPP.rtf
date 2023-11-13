@@ -6,6 +6,21 @@
 const int SIZE = 3;  // Taille de la grille
 const int SCORE_MAX = 5;  // Score maximum pour gagner
 
+// Fonction pour effacer l'écran
+void effacerEcran() {
+    #ifdef _WIN32
+        system("cls");  // Windows
+    #else
+        system("clear");  // Unix/Linux, including macOS
+    #endif
+}
+
+// Structure pour représenter les joueurs
+struct Joueur {
+    char symbole;
+    int score;
+};
+
 // Fonction pour afficher la grille avec le titre
 void afficherGrille(char grille[SIZE][SIZE], const std::string& titre, std::array<int, 3> ligneGagnante) {
     // Affiche le titre
@@ -65,18 +80,12 @@ bool verifierVictoire(char grille[SIZE][SIZE], char symbole, std::array<int, 3>&
 int main() {
     char grille[SIZE][SIZE];
 
-    // Scores des joueurs
-    int scoreJoueur1 = 0;
-    int scoreJoueur2 = 0;
-
-    // Variable pour stocker le joueur qui a remporté la dernière partie
-    char dernierGagnant = '\0';
+    // Joueurs
+    Joueur joueurs[2] = {{'X', 0}, {'O', 0}};
 
     // Boucle principale
     do {
-        char joueur1 = 'X';
-        char joueur2 = 'O';
-        char symboleCourant = (dernierGagnant == joueur1) ? joueur2 : joueur1;
+        char symboleCourant = (joueurs[0].score > joueurs[1].score) ? joueurs[1].symbole : joueurs[0].symbole;
         int ligne, colonne;
 
         // Initialisation de la grille
@@ -89,17 +98,13 @@ int main() {
         // Boucle de jeu
         while (true) {
             // Efface l'écran avant d'afficher la grille
-            #ifdef _WIN32
-                system("cls");  // Windows
-            #else
-                system("clear");  // Unix/Linux, including macOS
-            #endif
+            effacerEcran();
 
             // Affiche la grille avec le titre et la ligne gagnante
             afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", { -1, -1, -1 });
 
             // Demande au joueur actuel de jouer
-            std::cout << "Joueur " << (symboleCourant == joueur1 ? "1" : "2") << ", entrez le numéro de la case (1-9) : ";
+            std::cout << "Joueur " << (symboleCourant == joueurs[0].symbole ? "1" : "2") << ", entrez le numéro de la case (1-9) : ";
 
             // Vérifie si la saisie est un nombre entre 1 et 9
             while (!(std::cin >> ligne) || ligne < 1 || ligne > SIZE * SIZE || grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] != ' ') {
@@ -116,28 +121,22 @@ int main() {
                 // Vérifie la victoire
                 if (verifierVictoire(grille, symboleCourant, ligneGagnante)) {
                     // Efface l'écran avant d'afficher la grille finale
-                    #ifdef _WIN32
-                        system("cls");  // Windows
-                    #else
-                        system("clear");  // Unix/Linux, including macOS
-                    #endif
+                    effacerEcran();
 
                     // Affiche la grille avec le titre et la ligne gagnante
                     afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", ligneGagnante);
 
-                    std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;
+                    std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueurs[0].symbole ? "1" : "2") << " !" << std::endl;
 
                     // Incrémente le score du joueur gagnant
-                    if (symboleCourant == joueur1) {
-                        ++scoreJoueur1;
-                        dernierGagnant = joueur1;
+                    if (symboleCourant == joueurs[0].symbole) {
+                        ++joueurs[0].score;
                     } else {
-                        ++scoreJoueur2;
-                        dernierGagnant = joueur2;
+                        ++joueurs[1].score;
                     }
 
                     // Affiche le score
-                    std::cout << "Score : Joueur 1 = " << scoreJoueur1 << ", Joueur 2 = " << scoreJoueur2 << std::endl;
+                    std::cout << "Score : Joueur 1 = " << joueurs[0].score << ", Joueur 2 = " << joueurs[1].score << std::endl;
 
                     break;
                 }
@@ -158,11 +157,7 @@ int main() {
 
                 if (grilleRemplie) {
                     // Efface l'écran avant d'afficher la grille finale en cas de match nul
-                    #ifdef _WIN32
-                        system("cls");  // Windows
-                    #else
-                        system("clear");  // Unix/Linux, including macOS
-                    #endif
+                    effacerEcran();
 
                     // Affiche la grille avec le titre
                     afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", { -1, -1, -1 });
@@ -172,16 +167,13 @@ int main() {
                 }
 
                 // Change de joueur
-                symboleCourant = (symboleCourant == joueur1) ? joueur2 : joueur1;
+                symboleCourant = (symboleCourant == joueurs[0].symbole) ? joueurs[1].symbole : joueurs[0].symbole;
             }
         }
 
         // Vérifie la condition de fin de jeu
-        if (scoreJoueur1 == SCORE_MAX) {
-            std::cout << "Victoire du joueur 1 ! Merci d'avoir joue !" << std::endl;
-            break;
-        } else if (scoreJoueur2 == SCORE_MAX) {
-            std::cout << "Victoire du joueur 2 ! Merci d'avoir joue !" << std::endl;
+        if (joueurs[0].score == SCORE_MAX || joueurs[1].score == SCORE_MAX) {
+            std::cout << "Victoire du joueur " << (joueurs[0].score == SCORE_MAX ? "1" : "2") << " ! Merci d'avoir joue !" << std::endl;
             break;
         }
 
