@@ -69,11 +69,14 @@ int main() {
     int scoreJoueur1 = 0;
     int scoreJoueur2 = 0;
 
+    // Variable pour stocker le joueur qui a remporté la dernière partie
+    char dernierGagnant = '\0';
+
     // Boucle principale
     do {
         char joueur1 = 'X';
         char joueur2 = 'O';
-        char symboleCourant = joueur1;
+        char symboleCourant = (dernierGagnant == joueur1) ? joueur2 : joueur1;
         int ligne, colonne;
 
         // Initialisation de la grille
@@ -127,8 +130,10 @@ int main() {
                     // Incrémente le score du joueur gagnant
                     if (symboleCourant == joueur1) {
                         ++scoreJoueur1;
+                        dernierGagnant = joueur1;
                     } else {
                         ++scoreJoueur2;
+                        dernierGagnant = joueur2;
                     }
 
                     // Affiche le score
