@@ -1,18 +1,25 @@
 #include <iostream>
 #include <cstdlib>  // Pour utiliser system("cls") ou system("clear")
 #include <limits>
+#include <array>
 
 const int SIZE = 3;  // Taille de la grille
 const int SCORE_MAX = 5;  // Score maximum pour gagner
 
 // Fonction pour afficher la grille avec le titre
-void afficherGrille(char grille[SIZE][SIZE], const std::string& titre) {
+void afficherGrille(char grille[SIZE][SIZE], const std::string& titre, std::array<int, 3> ligneGagnante) {
     // Affiche le titre
     std::cout << titre << std::endl;
 
     for (int i = 0; i < SIZE; ++i) {
         for (int j = 0; j < SIZE; ++j) {
-            std::cout << grille[i][j];
+            if (ligneGagnante[0] == i * SIZE + j || ligneGagnante[1] == i * SIZE + j || ligneGagnante[2] == i * SIZE + j) {
+                // Affiche un caractère barré si la position est gagnante
+                std::cout << " ̶" << grille[i][j] << "̶";
+            } else {
+                std::cout << grille[i][j];
+            }
+
             if (j < SIZE - 1) {
                 std::cout << " | ";
             }
@@ -28,11 +35,15 @@ void afficherGrille(char grille[SIZE][SIZE], const std::string& titre) {
 }
 
 // Fonction pour vérifier la victoire
-bool verifierVictoire(char grille[SIZE][SIZE], char symbole) {
+bool verifierVictoire(char grille[SIZE][SIZE], char symbole, std::array<int, 3>& ligneGagnante) {
     // Vérification des lignes et colonnes
     for (int i = 0; i < SIZE; ++i) {
         if ((grille[i][0] == symbole && grille[i][1] == symbole && grille[i][2] == symbole) ||
             (grille[0][i] == symbole && grille[1][i] == symbole && grille[2][i] == symbole)) {
+            // Indique les positions de la ligne gagnante
+            ligneGagnante[0] = i * SIZE;
+            ligneGagnante[1] = i * SIZE + 1;
+            ligneGagnante[2] = i * SIZE + 2;
             return true;
         }
     }
@@ -40,6 +51,10 @@ bool verifierVictoire(char grille[SIZE][SIZE], char symbole) {
     // Vérification des diagonales
     if ((grille[0][0] == symbole && grille[1][1] == symbole && grille[2][2] == symbole) ||
         (grille[0][2] == symbole && grille[1][1] == symbole && grille[2][0] == symbole)) {
+        // Indique les positions de la ligne gagnante
+        ligneGagnante[0] = 0;
+        ligneGagnante[1] = 4;
+        ligneGagnante[2] = 8;
         return true;
     }
 
@@ -77,8 +92,8 @@ int main() {
                 system("clear");  // Unix/Linux, including macOS
             #endif
 
-            // Affiche la grille avec le titre
-            afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------");
+            // Affiche la grille avec le titre et la ligne gagnante
+            afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", { -1, -1, -1 });
 
             // Demande au joueur actuel de jouer
             std::cout << "Joueur " << (symboleCourant == joueur1 ? "1" : "2") << ", entrez le numéro de la case (1-9) : ";
@@ -93,9 +108,10 @@ int main() {
             // Vérifie si la case est valide
             if (ligne >= 1 && ligne <= SIZE * SIZE && grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] == ' ') {
                 grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] = symboleCourant;
+                std::array<int, 3> ligneGagnante = { -1, -1, -1 };
 
                 // Vérifie la victoire
-                if (verifierVictoire(grille, symboleCourant)) {
+                if (verifierVictoire(grille, symboleCourant, ligneGagnante)) {
                     // Efface l'écran avant d'afficher la grille finale
                     #ifdef _WIN32
                         system("cls");  // Windows
@@ -103,8 +119,8 @@ int main() {
                         system("clear");  // Unix/Linux, including macOS
                     #endif
 
-                    // Affiche la grille avec le titre
-                    afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------");
+                    // Affiche la grille avec le titre et la ligne gagnante
+                    afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", ligneGagnante);
 
                     std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;
 
@@ -144,7 +160,7 @@ int main() {
                     #endif
 
                     // Affiche la grille avec le titre
-                    afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------");
+                    afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", { -1, -1, -1 });
 
                     std::cout << "Match nul !" << std::endl;
                     break;
