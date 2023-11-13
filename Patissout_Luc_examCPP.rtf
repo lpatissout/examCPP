@@ -3,6 +3,7 @@
 #include <limits>
 
 const int SIZE = 3;  // Taille de la grille
+const int SCORE_MAX = 5;  // Score maximum pour gagner
 
 // Fonction pour afficher la grille
 void afficherGrille(char grille[SIZE][SIZE]) {
@@ -66,6 +67,13 @@ int main() {
 
         // Boucle de jeu
         while (true) {
+            // Efface l'écran avant d'afficher la grille
+            #ifdef _WIN32
+                system("cls");  // Windows
+            #else
+                system("clear");  // Unix/Linux, including macOS
+            #endif
+
             // Affiche la grille
             afficherGrille(grille);
 
@@ -79,19 +87,19 @@ int main() {
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
 
-            // Efface l'écran après que le joueur ait entré son coup
-            #ifdef _WIN32
-                system("cls");  // Windows
-            #else
-                system("clear");  // Unix/Linux, including macOS
-            #endif
-
             // Vérifie si la case est valide
             if (ligne >= 1 && ligne <= SIZE * SIZE && grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] == ' ') {
                 grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] = symboleCourant;
 
                 // Vérifie la victoire
                 if (verifierVictoire(grille, symboleCourant)) {
+                    // Efface l'écran avant d'afficher la grille finale
+                    #ifdef _WIN32
+                        system("cls");  // Windows
+                    #else
+                        system("clear");  // Unix/Linux, including macOS
+                    #endif
+
                     afficherGrille(grille);
                     std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;
 
@@ -123,6 +131,13 @@ int main() {
                 }
 
                 if (grilleRemplie) {
+                    // Efface l'écran avant d'afficher la grille finale en cas de match nul
+                    #ifdef _WIN32
+                        system("cls");  // Windows
+                    #else
+                        system("clear");  // Unix/Linux, including macOS
+                    #endif
+
                     afficherGrille(grille);
                     std::cout << "Match nul !" << std::endl;
                     break;
@@ -131,6 +146,15 @@ int main() {
                 // Change de joueur
                 symboleCourant = (symboleCourant == joueur1) ? joueur2 : joueur1;
             }
+        }
+
+        // Vérifie la condition de fin de jeu
+        if (scoreJoueur1 == SCORE_MAX) {
+            std::cout << "Victoire du joueur 1 ! Merci d'avoir joue !" << std::endl;
+            break;
+        } else if (scoreJoueur2 == SCORE_MAX) {
+            std::cout << "Victoire du joueur 2 ! Merci d'avoir joue !" << std::endl;
+            break;
         }
 
         // Demande aux joueurs s'ils veulent rejouer
