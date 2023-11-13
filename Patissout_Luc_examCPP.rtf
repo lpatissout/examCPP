@@ -5,8 +5,11 @@
 const int SIZE = 3;  // Taille de la grille
 const int SCORE_MAX = 5;  // Score maximum pour gagner
 
-// Fonction pour afficher la grille
-void afficherGrille(char grille[SIZE][SIZE]) {
+// Fonction pour afficher la grille avec le titre
+void afficherGrille(char grille[SIZE][SIZE], const std::string& titre) {
+    // Affiche le titre
+    std::cout << titre << std::endl;
+
     for (int i = 0; i < SIZE; ++i) {
         for (int j = 0; j < SIZE; ++j) {
             std::cout << grille[i][j];
@@ -74,8 +77,8 @@ int main() {
                 system("clear");  // Unix/Linux, including macOS
             #endif
 
-            // Affiche la grille
-            afficherGrille(grille);
+            // Affiche la grille avec le titre
+            afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------");
 
             // Demande au joueur actuel de jouer
             std::cout << "Joueur " << (symboleCourant == joueur1 ? "1" : "2") << ", entrez le numéro de la case (1-9) : ";
@@ -100,7 +103,9 @@ int main() {
                         system("clear");  // Unix/Linux, including macOS
                     #endif
 
-                    afficherGrille(grille);
+                    // Affiche la grille avec le titre
+                    afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------");
+
                     std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;
 
                     // Incrémente le score du joueur gagnant
@@ -138,7 +143,9 @@ int main() {
                         system("clear");  // Unix/Linux, including macOS
                     #endif
 
-                    afficherGrille(grille);
+                    // Affiche la grille avec le titre
+                    afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------");
+
                     std::cout << "Match nul !" << std::endl;
                     break;
                 }
