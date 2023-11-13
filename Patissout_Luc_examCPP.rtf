@@ -46,6 +46,10 @@ bool verifierVictoire(char grille[SIZE][SIZE], char symbole) {
 int main() {
     char grille[SIZE][SIZE];
 
+    // Scores des joueurs
+    int scoreJoueur1 = 0;
+    int scoreJoueur2 = 0;
+
     // Boucle principale
     do {
         char joueur1 = 'X';
@@ -90,6 +94,17 @@ int main() {
                 if (verifierVictoire(grille, symboleCourant)) {
                     afficherGrille(grille);
                     std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;
+
+                    // Incrémente le score du joueur gagnant
+                    if (symboleCourant == joueur1) {
+                        ++scoreJoueur1;
+                    } else {
+                        ++scoreJoueur2;
+                    }
+
+                    // Affiche le score
+                    std::cout << "Score : Joueur 1 = " << scoreJoueur1 << ", Joueur 2 = " << scoreJoueur2 << std::endl;
+
                     break;
                 }
 
@@ -131,4 +146,3 @@ int main() {
 
     return 0;
 }
-
