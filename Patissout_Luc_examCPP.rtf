@@ -1,134 +1,133 @@
-#include <iostream>\
-#include <cstdlib>  // Pour utiliser system("cls") ou system("clear")\
-#include <limits>\
-\
-const int SIZE = 3;  // Taille de la grille\
-\
-// Fonction pour afficher la grille\
-void afficherGrille(char grille[SIZE][SIZE]) \{\
-    for (int i = 0; i < SIZE; ++i) \{\
-        for (int j = 0; j < SIZE; ++j) \{\
-            std::cout << grille[i][j];\
-            if (j < SIZE - 1) \{\
-                std::cout << " | ";\
-            \}\
-        \}\
-        std::cout << std::endl;\
-        if (i < SIZE - 1) \{\
-            for (int k = 0; k < SIZE * 4 - 1; ++k) \{\
-                std::cout << "-";\
-            \}\
-            std::cout << std::endl;\
-        \}\
-    \}\
-\}\
-\
-// Fonction pour v\'e9rifier la victoire\
-bool verifierVictoire(char grille[SIZE][SIZE], char symbole) \{\
-    // V\'e9rification des lignes et colonnes\
-    for (int i = 0; i < SIZE; ++i) \{\
-        if ((grille[i][0] == symbole && grille[i][1] == symbole && grille[i][2] == symbole) ||\
-            (grille[0][i] == symbole && grille[1][i] == symbole && grille[2][i] == symbole)) \{\
-            return true;\
-        \}\
-    \}\
-\
-    // V\'e9rification des diagonales\
-    if ((grille[0][0] == symbole && grille[1][1] == symbole && grille[2][2] == symbole) ||\
-        (grille[0][2] == symbole && grille[1][1] == symbole && grille[2][0] == symbole)) \{\
-        return true;\
-    \}\
-\
-    return false;\
-\}\
-\
-// Fonction principale\
-int main() \{\
-    char grille[SIZE][SIZE];\
-\
-    // Boucle principale\
-    do \{\
-        char joueur1 = 'X';\
-        char joueur2 = 'O';\
-        char symboleCourant = joueur1;\
-        int ligne, colonne;\
-\
-        // Initialisation de la grille\
-        for (int i = 0; i < SIZE; ++i) \{\
-            for (int j = 0; j < SIZE; ++j) \{\
-                grille[i][j] = ' ';\
-            \}\
-        \}\
-\
-        // Boucle de jeu\
-        while (true) \{\
-            // Affiche la grille\
-            afficherGrille(grille);\
-\
-            // Demande au joueur actuel de jouer\
-            std::cout << "Joueur " << (symboleCourant == joueur1 ? "1" : "2") << ", entrez le num\'e9ro de la case (1-9) : ";\
-\
-            // V\'e9rifie si la saisie est un nombre entre 1 et 9\
-            while (!(std::cin >> ligne) || ligne < 1 || ligne > SIZE * SIZE || grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] != ' ') \{\
-                std::cout << "Saisie invalide. Entrez un nombre entre 1 et 9 pour une case non occup\'e9e : ";\
-                std::cin.clear();\
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\
-            \}\
-\
-            // Efface l'\'e9cran apr\'e8s que le joueur ait entr\'e9 son coup\
-            #ifdef _WIN32\
-                system("cls");  // Windows\
-            #else\
-                system("clear");  // Unix/Linux, including macOS\
-            #endif\
-\
-            // V\'e9rifie si la case est valide\
-            if (ligne >= 1 && ligne <= SIZE * SIZE && grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] == ' ') \{\
-                grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] = symboleCourant;\
-\
-                // V\'e9rifie la victoire\
-                if (verifierVictoire(grille, symboleCourant)) \{\
-                    afficherGrille(grille);\
-                    std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;\
-                    break;\
-                \}\
-\
-                // V\'e9rifie l'\'e9galit\'e9\
-                bool grilleRemplie = true;\
-                for (int i = 0; i < SIZE; ++i) \{\
-                    for (int j = 0; j < SIZE; ++j) \{\
-                        if (grille[i][j] == ' ') \{\
-                            grilleRemplie = false;\
-                            break;\
-                        \}\
-                    \}\
-                    if (!grilleRemplie) \{\
-                        break;\
-                    \}\
-                \}\
-\
-                if (grilleRemplie) \{\
-                    afficherGrille(grille);\
-                    std::cout << "Match nul !" << std::endl;\
-                    break;\
-                \}\
-\
-                // Change de joueur\
-                symboleCourant = (symboleCourant == joueur1) ? joueur2 : joueur1;\
-            \}\
-        \}\
-\
-        // Demande aux joueurs s'ils veulent rejouer\
-        char choixRejouer;\
-        std::cout << "Voulez-vous rejouer ? (O pour oui, X pour non) : ";\
-        std::cin >> choixRejouer;\
-\
-        if (choixRejouer != 'O' && choixRejouer != 'o') \{\
-            break;  // Sort de la boucle principale\
-        \}\
-\
-    \} while (true);\
-\
-    return 0;\
-\}\
+#include <iostream>
+#include <cstdlib>  // Pour utiliser system("cls") ou system("clear")
+#include <limits>
+
+const int SIZE = 3;  // Taille de la grille
+
+// Fonction pour afficher la grille
+void afficherGrille(char grille[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; ++i) {
+        for (int j = 0; j < SIZE; ++j) {
+            std::cout << grille[i][j];
+            if (j < SIZE - 1) {
+                std::cout << " | ";
+            }
+        }
+        std::cout << std::endl;
+        if (i < SIZE - 1) {
+            for (int k = 0; k < SIZE * 4 - 1; ++k) {
+                std::cout << "-";
+            }
+            std::cout << std::endl;
+        }
+    }
+}
+
+// Fonction pour vérifier la victoire
+bool verifierVictoire(char grille[SIZE][SIZE], char symbole) {
+    // Vérification des lignes et colonnes
+    for (int i = 0; i < SIZE; ++i) {
+        if ((grille[i][0] == symbole && grille[i][1] == symbole && grille[i][2] == symbole) ||
+            (grille[0][i] == symbole && grille[1][i] == symbole && grille[2][i] == symbole)) {
+            return true;
+        }
+    }
+
+    // Vérification des diagonales
+    if ((grille[0][0] == symbole && grille[1][1] == symbole && grille[2][2] == symbole) ||
+        (grille[0][2] == symbole && grille[1][1] == symbole && grille[2][0] == symbole)) {
+        return true;
+    }
+
+    return false;
+}
+
+// Fonction principale
+int main() {
+    char grille[SIZE][SIZE];
+
+    // Boucle principale
+    do {
+        char joueur1 = 'X';
+        char joueur2 = 'O';
+        char symboleCourant = joueur1;
+        int ligne, colonne;
+
+        // Initialisation de la grille
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                grille[i][j] = ' ';
+            }
+        }
+
+        // Boucle de jeu
+        while (true) {
+            // Affiche la grille
+            afficherGrille(grille);
+
+            // Demande au joueur actuel de jouer
+            std::cout << "Joueur " << (symboleCourant == joueur1 ? "1" : "2") << ", entrez le numéro de la case (1-9) : ";
+
+            // Vérifie si la saisie est un nombre entre 1 et 9
+            while (!(std::cin >> ligne) || ligne < 1 || ligne > SIZE * SIZE || grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] != ' ') {
+                std::cout << "Saisie invalide. Entrez un nombre entre 1 et 9 pour une case non occupée : ";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+
+            // Efface l'écran après que le joueur ait entré son coup
+            #ifdef _WIN32
+                system("cls");  // Windows
+            #else
+                system("clear");  // Unix/Linux, including macOS
+            #endif
+
+            // Vérifie si la case est valide
+            if (ligne >= 1 && ligne <= SIZE * SIZE && grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] == ' ') {
+                grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] = symboleCourant;
+
+                // Vérifie la victoire
+                if (verifierVictoire(grille, symboleCourant)) {
+                    afficherGrille(grille);
+                    std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueur1 ? "1" : "2") << " !" << std::endl;
+                    break;
+                }
+
+                // Vérifie l'égalité
+                bool grilleRemplie = true;
+                for (int i = 0; i < SIZE; ++i) {
+                    for (int j = 0; j < SIZE; ++j) {
+                        if (grille[i][j] == ' ') {
+                            grilleRemplie = false;
+                            break;
+                        }
+                    }
+                    if (!grilleRemplie) {
+                        break;
+                    }
+                }
+
+                if (grilleRemplie) {
+                    afficherGrille(grille);
+                    std::cout << "Match nul !" << std::endl;
+                    break;
+                }
+
+                // Change de joueur
+                symboleCourant = (symboleCourant == joueur1) ? joueur2 : joueur1;
+            }
+        }
+
+        // Demande aux joueurs s'ils veulent rejouer
+        char choixRejouer;
+        std::cout << "Voulez-vous rejouer ? (O pour oui, X pour non) : ";
+        std::cin >> choixRejouer;
+
+        if (choixRejouer != 'O' && choixRejouer != 'o') {
+            break;  // Sort de la boucle principale
+        }
+
+    } while (true);
+
+    return 0;
 }
