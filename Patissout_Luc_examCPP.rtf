@@ -2,6 +2,7 @@
 #include <cstdlib>  // Pour utiliser system("cls") ou system("clear")
 #include <limits>
 #include <array>
+#include <string>  // Ajout de la bibliothèque pour les chaînes de caractères
 
 const int SIZE = 3;  // Taille de la grille
 const int SCORE_MAX = 5;  // Score maximum pour gagner
@@ -19,6 +20,7 @@ void effacerEcran() {
 struct Joueur {
     char symbole;
     int score;
+    std::string nom;  // Ajout du nom du joueur
 };
 
 // Fonction pour afficher la grille avec le titre
@@ -76,12 +78,27 @@ bool verifierVictoire(char grille[SIZE][SIZE], char symbole, std::array<int, 3>&
     return false;
 }
 
+// Fonction pour saisir le nom d'un joueur
+std::string saisirNomJoueur(int numeroJoueur) {
+    std::string nom;
+    std::cout << "Entrez le nom du Joueur " << numeroJoueur << " : ";
+    std::cin >> nom;
+    return nom;
+}
+
 // Fonction principale
 int main() {
     char grille[SIZE][SIZE];
 
     // Joueurs
-    Joueur joueurs[2] = {{'X', 0}, {'O', 0}};
+    Joueur joueurs[2];
+
+    // Demander aux joueurs d'entrer leur nom
+    for (int i = 0; i < 2; ++i) {
+        joueurs[i].nom = saisirNomJoueur(i + 1);
+        joueurs[i].symbole = (i == 0) ? 'X' : 'O';
+        joueurs[i].score = 0;
+    }
 
     // Boucle principale
     do {
@@ -104,7 +121,8 @@ int main() {
             afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", { -1, -1, -1 });
 
             // Demande au joueur actuel de jouer
-            std::cout << "Joueur " << (symboleCourant == joueurs[0].symbole ? "1" : "2") << ", entrez le numéro de la case (1-9) : ";
+            std::cout << (symboleCourant == joueurs[0].symbole ? joueurs[0].nom : joueurs[1].nom)
+                      << ", entrez le numéro de la case (1-9) : ";
 
             // Vérifie si la saisie est un nombre entre 1 et 9
             while (!(std::cin >> ligne) || ligne < 1 || ligne > SIZE * SIZE || grille[(ligne - 1) / SIZE][(ligne - 1) % SIZE] != ' ') {
@@ -126,7 +144,7 @@ int main() {
                     // Affiche la grille avec le titre et la ligne gagnante
                     afficherGrille(grille, "-----------------------------------------------------------------------LE MORPAT-------------------------------------------------------------------", ligneGagnante);
 
-                    std::cout << "C'est gagne pour le joueur " << (symboleCourant == joueurs[0].symbole ? "1" : "2") << " !" << std::endl;
+                    std::cout << "C'est gagne pour " << (symboleCourant == joueurs[0].symbole ? joueurs[0].nom : joueurs[1].nom) << " !" << std::endl;
 
                     // Incrémente le score du joueur gagnant
                     if (symboleCourant == joueurs[0].symbole) {
@@ -136,7 +154,7 @@ int main() {
                     }
 
                     // Affiche le score
-                    std::cout << "Score : Joueur 1 = " << joueurs[0].score << ", Joueur 2 = " << joueurs[1].score << std::endl;
+                    std::cout << "Score : " << joueurs[0].nom << " = " << joueurs[0].score << ", " << joueurs[1].nom << " = " << joueurs[1].score << std::endl;
 
                     break;
                 }
@@ -173,7 +191,7 @@ int main() {
 
         // Vérifie la condition de fin de jeu
         if (joueurs[0].score == SCORE_MAX || joueurs[1].score == SCORE_MAX) {
-            std::cout << "Victoire du joueur " << (joueurs[0].score == SCORE_MAX ? "1" : "2") << " ! Merci d'avoir joue !" << std::endl;
+            std::cout << "Victoire de " << (joueurs[0].score == SCORE_MAX ? joueurs[0].nom : joueurs[1].nom) << " ! Merci d'avoir joue !" << std::endl;
             break;
         }
 
